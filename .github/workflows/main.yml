@@ -14,7 +14,7 @@ jobs:
 
     env:
       AWS_REGION: ap-south-1
-      ECR_REPO: ${{ secrets.ECR_REPO_URL }}
+      ECR_REPO: 074002960123.dkr.ecr.ap-south-1.amazonaws.com/myapp
       CLUSTER_NAME: demo-eks
 
     steps:
@@ -36,11 +36,12 @@ jobs:
       - name: Build and Push Docker image
         run: |
           IMAGE_TAG=${{ github.sha }}
-          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPO_URL }}:$IMAGE_TAG
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO }}:$IMAGE_TAG
           echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
 
           docker build -t $IMAGE_URI .
           docker push $IMAGE_URI
+
 
       # Update deployment.yaml with new image
       - name: Update Kubernetes manifests
