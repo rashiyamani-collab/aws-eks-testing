@@ -33,11 +33,20 @@ jobs:
           aws ecr get-login-password --region $AWS_REGION \
           | docker login --username AWS --password-stdin $ECR_REPO
 
-      - name: Build, Tag, and Push Docker image
+      - name: Build and Push Docker image
         run: |
-          IMAGE_TAG=latest
-          docker build -t $ECR_REPO:$IMAGE_TAG .
-          docker push $ECR_REPO:$IMAGE_TAG
+          IMAGE_TAG=${{ github.sha }}
+          IMAGE_URI=${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPO }}:$IMAGE_TAG
+          echo "IMAGE_URI=$IMAGE_URI" >> $GITHUB_ENV
+
+          docker build -t $IMAGE_URI .
+          docker push $IMAGE_URI
+
+      # Update deployment.yaml with new image
+      - name: Update Kubernetes manifests
+        run: |
+          sed -i "s|image:.*|image: $IMAGE_URI|g" k8s/app-deployment.yaml
+          
 
       - name: Update kubeconfig
         run: aws eks update-kubeconfig --region ap-south-1 --name demo-eks
