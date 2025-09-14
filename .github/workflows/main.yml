@@ -15,7 +15,7 @@ jobs:
     env:
       AWS_REGION: ap-south-1
       ECR_REPO: 074002960123.dkr.ecr.ap-south-1.amazonaws.com/myapp
-      CLUSTER_NAME: demo-eks2
+      CLUSTER_NAME: demo-eks-dev
 
     steps:
       - name: Checkout code
@@ -24,7 +24,7 @@ jobs:
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::074002960123:role/demo-eks2-github-oidc-role
+          role-to-assume: arn:aws:iam::074002960123:role/demo-eks-dev-github-oidc-role
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Log in to Amazon ECR
@@ -50,7 +50,7 @@ jobs:
           
 
       - name: Update kubeconfig
-        run: aws eks update-kubeconfig --region ap-south-1 --name demo-eks2
+        run: aws eks update-kubeconfig --region ap-south-1 --name demo-eks-dev
 
       - name: Deploy to EKS
         run: |
