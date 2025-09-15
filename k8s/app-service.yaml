@@ -1,16 +1,12 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: demo-app
-  namespace: default
-  labels:
-    app: demo-app
+  name: myapp-service
 spec:
-  type: LoadBalancer   # creates an AWS ELB in public subnets
+  type: LoadBalancer
   selector:
-    app: demo-app
+    app: myapp
   ports:
-    - name: http
-      port: 80
-      targetPort: 80
-
+    - protocol: TCP
+      port: 80          # External port
+      targetPort: 80    # Container port
