@@ -1,47 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-deployment
+  name: nginx-deployment2
   labels:
-    app: myapp
+    app: nginx2
 spec:
-  replicas: 2
+  replicas: 3 # Desired number of Nginx pods
   selector:
     matchLabels:
-      app: myapp
+      app: nginx2
   template:
     metadata:
       labels:
-        app: myapp
+        app: nginx2
     spec:
       containers:
-        - name: myapp-container
-          image: 074002960123.dkr.ecr.ap-south-1.amazonaws.com/myapp:latest
-          ports:
-            - containerPort: 80
-          livenessProbe:
-            httpGet:
-              path: /healthz
-              port: 80
-            initialDelaySeconds: 15
-            timeoutSeconds: 1
-            periodSeconds: 20
-            successThreshold: 1
-            failureThreshold: 3
-          readinessProbe:
-            httpGet:
-              path: /ready
-              port: 80
-            initialDelaySeconds: 5
-            timeoutSeconds: 1
-            periodSeconds: 10
-            successThreshold: 1
-            failureThreshold: 3
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
-      restartPolicy: Always
+      - name: nginx2
+        image: 074002960123.dkr.ecr.ap-south-1.amazonaws.com/myapp:latest # Using the latest Nginx image
+        ports:
+        - containerPort: 80 # Nginx listens on port 80 inside the container
